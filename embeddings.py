@@ -77,7 +77,7 @@ def retrieve_relevant_chunks(query, chunks, top_k=5, threshold=0.25):
         # Fall back to top results but with a higher threshold to avoid completely irrelevant content
         for chunk in chunks:
             sim_score = cosine_similarity([query_emb], [chunk['embedding']])[0][0]
-            if sim_score >= threshold * 0.8:  # Use slightly lower threshold as fallback
+            if sim_score >= threshold * 0.6:  # Use slightly lower threshold as fallback
                 similarities.append((chunk, sim_score))
         ranked = sorted(similarities, key=lambda x: x[1], reverse=True)
     
