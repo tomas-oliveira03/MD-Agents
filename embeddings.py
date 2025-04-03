@@ -28,8 +28,8 @@ def chunk_text(text, max_words=150, overlap=50):
     return chunks
 
 def create_embeddings(papers):
-    # Using a more powerful embedding model for better semantic understanding
-    embedder = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
+    # Using a more advanced embedding model for better semantic understanding
+    embedder = SentenceTransformer('sentence-transformers/multi-qa-mpnet-base-dot-v1')
     chunks = []
     
     for idx, paper in enumerate(papers):
@@ -41,19 +41,20 @@ def create_embeddings(papers):
                 continue
                 
             for c in chunk_text(para):
-                # Add more metadata to help with retrieval
+                # Normalize metadata and content
+                normalized_content = re.sub(r'\s+', ' ', c).strip()
                 chunks.append({
-                    "paper_id": idx+1,
+                    "paper_id": idx + 1,
                     "paragraph_id": para_idx,
-                    "content": c,
-                    "embedding": embedder.encode(c, normalize_embeddings=True)
+                    "content": normalized_content,
+                    "embedding": embedder.encode(normalized_content, normalize_embeddings=True)
                 })
     
     return chunks
 
 def retrieve_relevant_chunks(query, chunks, top_k=5, threshold=0.25):
     # Using the same embedding model as in create_embeddings
-    embedder = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
+    embedder = SentenceTransformer('sentence-transformers/multi-qa-mpnet-base-dot-v1')
     
     # Normalize and encode the query
     query = re.sub(r'\s+', ' ', query).strip()
