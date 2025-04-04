@@ -7,7 +7,7 @@ import utils
 def main():
     
     # Define paths for the original data and its embeddings
-    dataPaths = [f"papers/paper{i}.txt" for i in range(1, 6)]
+    dataPaths = [f"papers/paper{i}.txt" for i in range(1, 1)]
     embeddingsFilePaths = "embeddings/embeddings.pkl" 
     
     # Check if the embeddings file exists
@@ -26,7 +26,7 @@ def main():
             pickle.dump(chunks, f)
     
     # Read the context prompt from file
-    with open("config/contextPrompt.txt", "r", encoding="utf-8") as f:
+    with open("config/contextPrompt-AtividadeFisica.txt", "r", encoding="utf-8") as f:
         contextPrompt= f.read()
     
     # Initialize the LLM client
