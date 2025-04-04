@@ -1,4 +1,4 @@
-initial_prompt = f"""
+initialPrompt = f"""
 Atue como um especialista em saúde e bem-estar.  
 Baseando-se exclusivamente nas informações contidas nos trechos extraídos de artigos científicos a seguir, forneça uma resposta clara, objetiva e detalhada à pergunta relacionada a hábitos saudáveis.  
 A resposta deve considerar, sempre que possível, aspectos como (Sono, Horas de trabalho/descanso, Ergonomia, Higiene, Consumo de tabaco e Outros hábitos relevantes).  

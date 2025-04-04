@@ -1,64 +1,67 @@
 import pickle  # For saving and loading embeddings
-from llm import get_llm_response
-from embeddings import load_papers, create_embeddings, retrieve_relevant_chunks
+from LLMClient import LLMClient
+from embeddings import createEmbeddings, retrieveRelevantChunks
 import initPrompt
 import os
+import utils
 
 def main():
     
-    # Define paths for the papers and embeddings
-    paper_paths = [f"papers/paper{i}.txt" for i in range(1, 6)]
-    embeddings_file = "embeddings/embeddings.pkl" 
+    # Define paths for the original data and its embeddings
+    dataPaths = [f"papers/paper{i}.txt" for i in range(1, 6)]
+    embeddingsFilePaths = "embeddings/embeddings.pkl" 
     
     # Check if the embeddings file exists
-    if os.path.exists(embeddings_file):
+    if os.path.exists(embeddingsFilePaths):
         print("Loading existing embeddings...")
-        with open(embeddings_file, "rb") as f:
+        with open(embeddingsFilePaths, "rb") as f:
             chunks = pickle.load(f)
             
     else:
         print("Generating new embeddings...")
-        papers = load_papers(paper_paths)
-        chunks = create_embeddings(papers)
+        papers = utils.loadFiles(dataPaths)
+        chunks = createEmbeddings(papers)
         
         # Save the embeddings to a file
-        with open(embeddings_file, "wb") as f:
+        with open(embeddingsFilePaths, "wb") as f:
             pickle.dump(chunks, f)
-        print("Embeddings saved to file.")
     
     
+    # Initialize the LLM client
+    llmClient = LLMClient()
 
     while True:
-        # Pergunta do usuário
+        # Prompt the user for a question
         prompt = input("Digite a sua pergunta (ou 'EXIT' para sair): \n>>>")
         if prompt.strip().upper() == "EXIT":
             break
         
-        # Recuperar os chunks mais relevantes
-        relevant_chunks = retrieve_relevant_chunks(prompt, chunks, top_k=5)
+        # Retrieve relevant chunks using the embeddings
+        relevantChunks = retrieveRelevantChunks(prompt, chunks, topK=5)
         
-        # Formatar o contexto
-        context = "\n\n".join([f"Paper {c['paper_id']}:\n{c['content']}" for c in relevant_chunks])
+        # Format the context for the LLM
+        context = "\n\n".join([f"Paper {c['paper_id']}:\n{c['content']}" for c in relevantChunks])
         
-        # Montar o prompt final para o LLM
-        final_prompt = f""" {initPrompt.initial_prompt}
+        # Create the final prompt for the LLM
+        finalPrompt = (
+            f"{initPrompt.initialPrompt}\n\n"
+            "### Pergunta:\n"
+            f"{prompt}\n\n"
+            "### Contexto de artigos:\n"
+            f"{context}"
+        )
 
-### Pergunta:
-{prompt}
-
-### Contexto de artigos:
-{context}
-"""
-        
+        # Debugging output
         print("\nContexto RAG:")
         print(context)
         print("########")
         print("########")
         print("########\n")
         
-        # Obter a resposta do LLM
-        response = get_llm_response(final_prompt)
-
+        
+        # Get the LLM response
+        response = llmClient.generateResponse(finalPrompt)
+        
         print("Resposta do LLM:")
         print(response)
 
