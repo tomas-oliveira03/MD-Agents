@@ -1,7 +1,6 @@
 import pickle  # For saving and loading embeddings
 from LLMClient import LLMClient
 from embeddings import createEmbeddings, retrieveRelevantChunks
-import initPrompt
 import os
 import utils
 
@@ -26,13 +25,16 @@ def main():
         with open(embeddingsFilePaths, "wb") as f:
             pickle.dump(chunks, f)
     
+    # Read the context prompt from file
+    with open("config/contextPrompt.txt", "r", encoding="utf-8") as f:
+        contextPrompt= f.read()
     
     # Initialize the LLM client
     llmClient = LLMClient()
 
     while True:
         # Prompt the user for a question
-        prompt = input("Digite a sua pergunta (ou 'EXIT' para sair): \n>>>")
+        prompt = input("\n\nDigite a sua pergunta (ou 'EXIT' para sair): \n>>>")
         if prompt.strip().upper() == "EXIT":
             break
         
@@ -40,11 +42,11 @@ def main():
         relevantChunks = retrieveRelevantChunks(prompt, chunks, topK=5)
         
         # Format the context for the LLM
-        context = "\n\n".join([f"Paper {c['paper_id']}:\n{c['content']}" for c in relevantChunks])
+        context = "\n\n".join([f"Paper {c['paperId']}:\n{c['content']}" for c in relevantChunks])
         
         # Create the final prompt for the LLM
         finalPrompt = (
-            f"{initPrompt.initialPrompt}\n\n"
+            f"{contextPrompt}\n\n"
             "### Pergunta:\n"
             f"{prompt}\n\n"
             "### Contexto de artigos:\n"
@@ -53,7 +55,7 @@ def main():
 
         # Debugging output
         print("\nContexto RAG:")
-        print(context)
+        print(finalPrompt)
         print("########")
         print("########")
         print("########\n")
@@ -61,7 +63,7 @@ def main():
         
         # Get the LLM response
         response = llmClient.generateResponse(finalPrompt)
-        
+
         print("Resposta do LLM:")
         print(response)
 
