@@ -1,15 +1,33 @@
+import pickle  # For saving and loading embeddings
 from llm import get_llm_response
 from embeddings import load_papers, create_embeddings, retrieve_relevant_chunks
 import initPrompt
+import os
 
 def main():
-    # Definir o caminho dos arquivos dos papers
+    
+    # Define paths for the papers and embeddings
     paper_paths = [f"papers/paper{i}.txt" for i in range(1, 6)]
+    embeddings_file = "embeddings/embeddings.pkl" 
     
-    # Carregar os papers e criar os embeddings
-    papers = load_papers(paper_paths)
-    chunks = create_embeddings(papers)
+    # Check if the embeddings file exists
+    if os.path.exists(embeddings_file):
+        print("Loading existing embeddings...")
+        with open(embeddings_file, "rb") as f:
+            chunks = pickle.load(f)
+            
+    else:
+        print("Generating new embeddings...")
+        papers = load_papers(paper_paths)
+        chunks = create_embeddings(papers)
+        
+        # Save the embeddings to a file
+        with open(embeddings_file, "wb") as f:
+            pickle.dump(chunks, f)
+        print("Embeddings saved to file.")
     
+    
+
     while True:
         # Pergunta do usuário
         prompt = input("Digite a sua pergunta (ou 'EXIT' para sair): \n>>>")
