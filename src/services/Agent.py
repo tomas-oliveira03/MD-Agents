@@ -1,5 +1,5 @@
-from services.LLMClient import LLMClient
-from services.PineconeHandler import PineconeHandler
+from LLMClient import LLMClient
+from PineconeHandler import PineconeHandler
 
 class Agent:
     
