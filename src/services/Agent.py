@@ -1,9 +1,9 @@
-from LLMClient import LLMClient
-from PineconeHandler import PineconeHandler
+from services.LLMClient import LLMClient
+from services.PineconeHandler import PineconeHandler
 
 class Agent:
     
-    def __init__(self, reasoningModel=True, contextPrompt="config/contextPrompt.txt", topK=5, targetThreshold=0.6, minimumThreshold=0.2, maxHierarchyLevel=3):
+    def __init__(self, reasoningModel=True, contextPrompt="config/contextPrompt-Grupo4.txt", topK=5, targetThreshold=0.6, minimumThreshold=0.2, maxHierarchyLevel=3):
         
         self.contextPrompt=self.loadInitialPrompt(contextPrompt)
         self.pineconeHandler = PineconeHandler(topK, targetThreshold, minimumThreshold, maxHierarchyLevel)
