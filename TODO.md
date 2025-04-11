@@ -1,0 +1,6 @@
+- Reranker ??
+- Histórico de mensagens (MongoDB)
+- Contagem de tokens
+- Migrar para pinecone (Estrutura igual)
+- Definir melhor modelo e hiperparametros (por grupo)
+- Definir rotas para cada agente particular

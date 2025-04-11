@@ -1,10 +1,9 @@
-from openai import RateLimitError
-import requests
 from together import Together
 import os
 from dotenv import load_dotenv
 import re
 import together
+import tiktoken
 
 class LLMClient:
     
@@ -24,9 +23,24 @@ class LLMClient:
         else:
             self.model = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 
+    
+    def count_tokens_lla_model(self, text: str) -> int:
+        if not isinstance(text, str):
+            raise ValueError("Input must be a string")
+
+        # Load the tokenizer for the LLaMA model
+        encoding = tiktoken.get_encoding("cl100k_base")  # LLaMA models use the "cl100k_base" encoding
+        
+        # Encode the text and get the number of tokens
+        tokens = encoding.encode(text)
+        
+        return len(tokens)
+
+
     # Send a prompt to the LLM and return the response
     def generateResponse(self, prompt: str) -> str:
         try:
+            print("Token size", self.count_tokens_lla_model(prompt))
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],

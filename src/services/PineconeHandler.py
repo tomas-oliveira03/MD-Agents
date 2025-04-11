@@ -1,12 +1,12 @@
 import json
 from textwrap import wrap
-from pinecone import Pinecone, ServerlessSpec, PineconeApiException
+from pinecone import Pinecone, ServerlessSpec
 import os
 from dotenv import load_dotenv
 import random
 
 class PineconeHandler:
-    def __init__(self):
+    def __init__(self, topK, targetThreshold, minimumThreshold, maxHierarchyLevel):
         load_dotenv()
         apiKey = os.getenv("PINECONE_API_KEY")
         if not apiKey:
@@ -17,6 +17,11 @@ class PineconeHandler:
         self.indexName = "project"
         self.dimension = 1024
         self.namespace = "ns1"
+        
+        self.targetThreshold = targetThreshold
+        self.minimumThreshold=minimumThreshold
+        self.maxHierarchyLevel=maxHierarchyLevel
+        self.topK=topK
 
         # Ensure index exists or create it
         self.index, hasJustBeenCreated = self.getIndex()
@@ -111,8 +116,8 @@ class PineconeHandler:
         print("Data upserted successfully.")
 
 
-    # Query the index
-    def query(self, queryText, topK=5, targetThreshold=0.6, minimumThreshold=0.2, maxHierarchyLevel=3):
+    # Query the index 
+    def query(self, queryText):
         # Embed the query once
         query_embedding = self.pc.inference.embed(
             model="llama-text-embed-v2",
@@ -122,13 +127,13 @@ class PineconeHandler:
 
         finalResults = []
 
-        for currentHierachyLevel in range(1, maxHierarchyLevel + 1):
+        for currentHierachyLevel in range(1, self.maxHierarchyLevel + 1):
             print(f"Searching hierarchy level {currentHierachyLevel}...")
 
             results = self.index.query(
                 namespace=self.namespace,
                 vector=query_embedding,
-                top_k=topK,
+                top_k=self.topK,
                 include_values=False,
                 include_metadata=True,
                 filter={"hierarchy": currentHierachyLevel}
@@ -145,7 +150,7 @@ class PineconeHandler:
             for match in matches:
                 
                 # If we already have topK results above threshold, ignore this
-                if len(finalResults) < topK:
+                if len(finalResults) < self.topK:
                     finalResults.append(match)
                     
                 else:
@@ -153,12 +158,12 @@ class PineconeHandler:
                     lowest = min(finalResults, key=lambda x: x["score"])
 
                     # Only replace the lowest scoring match if the new match is better and out of threshold scope
-                    if match["score"] > lowest["score"] and lowest["score"] < targetThreshold:
+                    if match["score"] > lowest["score"] and lowest["score"] < self.targetThreshold:
                         finalResults.remove(lowest)
                         finalResults.append(match)
 
             # Stop if all finalResults are above threshold and we have enough
-            if len(finalResults) == topK and all(r["score"] >= targetThreshold for r in finalResults):
+            if len(finalResults) == self.topK and all(r["score"] >= self.targetThreshold for r in finalResults):
                 print("All required results found. Stopping.")
                 break
             else:
@@ -168,7 +173,7 @@ class PineconeHandler:
         finalResults.sort(key=lambda x: x["score"], reverse=True)
         
         # Filter by minimum accepted threshold values
-        finalResults = [x for x in finalResults if x["score"] >= minimumThreshold]
+        finalResults = [x for x in finalResults if x["score"] >= self.minimumThreshold]
 
         # Build response
         responseBuilder = ""
@@ -197,7 +202,3 @@ class PineconeHandler:
         return responseBuilder
         
 
-
-if __name__ == "__main__":
-    p = PineconeHandler()
-    p.insertDataInBatches()

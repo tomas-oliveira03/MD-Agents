@@ -3,10 +3,10 @@ from PineconeHandler import PineconeHandler
 
 class Agent:
     
-    def __init__(self, reasoningModel=True):
+    def __init__(self, reasoningModel=True, contextPrompt="config/contextPrompt.txt", topK=5, targetThreshold=0.6, minimumThreshold=0.2, maxHierarchyLevel=3):
         
-        self.contextPrompt=self.loadInitialPrompt("config/contextPrompt.txt")
-        self.pineconeHandler = PineconeHandler()
+        self.contextPrompt=self.loadInitialPrompt(contextPrompt)
+        self.pineconeHandler = PineconeHandler(topK, targetThreshold, minimumThreshold, maxHierarchyLevel)
         self.llmClient = LLMClient(reasoningModel)
         
     def loadInitialPrompt(self, path):
@@ -49,10 +49,7 @@ class Agent:
         except Exception as e:
             raise
             
-            
 
-
-        
 if __name__ == "__main__":
     agent = Agent(reasoningModel=False)
     while True:

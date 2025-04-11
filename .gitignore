@@ -173,5 +173,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-papers/paper*.txt
-embeddings/
+src/config
