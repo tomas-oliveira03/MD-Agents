@@ -1,7 +1,7 @@
 from flask import request
 from datetime import datetime
 from server.utils.logger import logger  
-from server.routers.globalAgent import registerGlobalAgentRoutes
+from server.routers.specialistAgent import registerSpecialistAgentRoutes
 
 def registerRoutes(app, path):
     # Optional: Request timing
@@ -16,5 +16,5 @@ def registerRoutes(app, path):
             logger.info(f"Done in {duration.total_seconds():.2f}s - {response.status_code}")
         return response
 
-    # Register your global agent routes
-    registerGlobalAgentRoutes(app, prefix=f"{path}/globalAgent")
+    # Register specialist agent routes
+    registerSpecialistAgentRoutes(app, prefix=f"{path}/specialistAgent")

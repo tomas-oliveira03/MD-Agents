@@ -1,5 +1,5 @@
-from LLMClient import LLMClient
-from PineconeHandler import PineconeHandler
+from services.LLMClient import LLMClient
+from services.PineconeHandler import PineconeHandler
 
 class Agent:
     
@@ -44,6 +44,7 @@ class Agent:
 
             print("Response:")
             print(response)
+            return response
             
         except Exception as e:
             raise
