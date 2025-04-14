@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import random
 
 class PineconeHandler:
-    def __init__(self, topK, targetThreshold, minimumThreshold, maxHierarchyLevel):
+    def __init__(self, chunkedData, topK, targetThreshold, minimumThreshold, maxHierarchyLevel):
         load_dotenv()
         apiKey = os.getenv("PINECONE_API_KEY")
         if not apiKey:
@@ -17,7 +17,8 @@ class PineconeHandler:
         self.indexName = "project"
         self.dimension = 1024
         self.namespace = "ns1"
-        
+
+        self.chunkedData = chunkedData        
         self.targetThreshold = targetThreshold
         self.minimumThreshold=minimumThreshold
         self.maxHierarchyLevel=maxHierarchyLevel
@@ -85,7 +86,7 @@ class PineconeHandler:
     def insertDataInBatches(self):
         CHUNK_SIZE = 50
         # Load the pre-chunked JSON file (already split by text elsewhere)
-        with open("data/chunkedData.json", "r", encoding="utf-8") as f:
+        with open(self.chunkedData, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         # Helper: Chunk a list into smaller batches of 10

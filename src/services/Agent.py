@@ -3,10 +3,10 @@ from PineconeHandler import PineconeHandler
 
 class Agent:
     
-    def __init__(self, reasoningModel=True, contextPrompt="config/contextPrompt-Grupo4.txt", topK=5, targetThreshold=0.6, minimumThreshold=0.2, maxHierarchyLevel=3):
+    def __init__(self, reasoningModel=True, contextPrompt="config/contextPrompt.txt", chunkedData="data/chunkedData.json", topK=5, targetThreshold=0.6, minimumThreshold=0.2, maxHierarchyLevel=3):
         
-        self.contextPrompt=self.loadInitialPrompt(contextPrompt)
-        self.pineconeHandler = PineconeHandler(topK, targetThreshold, minimumThreshold, maxHierarchyLevel)
+        self.contextPrompt = self.loadInitialPrompt(contextPrompt)
+        self.pineconeHandler = PineconeHandler(chunkedData, topK, targetThreshold, minimumThreshold, maxHierarchyLevel)
         self.llmClient = LLMClient(reasoningModel)
         
     def loadInitialPrompt(self, path):
@@ -28,15 +28,7 @@ class Agent:
             f"{prompt}\n\n"
             "Articles context:\n"
             f"{context}"
-        )
-
-        # # Debugging output 
-        # print("\nAll context:")
-        # print(finalPrompt)
-        # print("########")
-        # print("########")
-        # print("########\n")
-        
+        )        
         
         # Get the LLM response
         try:
