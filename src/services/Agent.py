@@ -13,6 +13,7 @@ class Agent:
         with open(path, "r", encoding="utf-8") as f:
             return f.read()
         
+        
     def submitQuestion(self, prompt):
         
         context = self.pineconeHandler.query(prompt)

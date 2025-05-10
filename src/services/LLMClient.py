@@ -23,24 +23,15 @@ class LLMClient:
         else:
             self.model = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 
-    
-    def count_tokens_lla_model(self, text: str) -> int:
-        if not isinstance(text, str):
-            raise ValueError("Input must be a string")
-
-        # Load the tokenizer for the LLaMA model
-        encoding = tiktoken.get_encoding("cl100k_base")  # LLaMA models use the "cl100k_base" encoding
-        
-        # Encode the text and get the number of tokens
-        tokens = encoding.encode(text)
-        
-        return len(tokens)
-
 
     # Send a prompt to the LLM and return the response
     def generateResponse(self, prompt: str) -> str:
         try:
-            print("Token size", self.count_tokens_lla_model(prompt))
+            isValidRequest = self.checkIfValidRequest(prompt)
+            print("Is Valid Request", isValidRequest)
+            
+            
+            
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
@@ -62,7 +53,35 @@ class LLMClient:
         except Exception as e:
             raise Exception("An unexpected error occurred.")
         
+        
+    def checkIfValidRequest(self, text: str) -> bool:    
+        tokensUsed = self.countTokensUsed(text)
+        maxNewTokens = 2048 
+        totalLimit = 8193 
+        fallBackTokens = 500
+        
+        totalTokensUsed = tokensUsed + maxNewTokens
+        allowedTokenLimit = totalLimit - fallBackTokens
+        
+        print("Tokens used", tokensUsed)
+        
+        if totalTokensUsed > allowedTokenLimit:
+            print(f"Warning: The prompt is too long ({totalTokensUsed} tokens). Please shorten it.")
+            return False
+        else:
+            return True
+    
+        
+    def countTokensUsed(self, text: str) -> int:
+        # Load the tokenizer for the LLaMA model
+        encoding = tiktoken.get_encoding("cl100k_base")  # LLaMA models use the "cl100k_base" encoding
+        
+        # Encode the text and get the number of tokens
+        tokens = encoding.encode(text)
+        
+        return len(tokens)
             
+        
     # Remove the <think>...</think> section from the response (present in reasoning models)
     def cleanResponse(self, response):
         return re.sub(r"<think>.*?</think>", "", response, flags=re.DOTALL).strip()
