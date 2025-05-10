@@ -27,7 +27,7 @@ class Agent:
         
         finalPrompt = formatFinalPrompt(self.contextPrompt, prompt, context, userInformation)   
         
-        response = self.llmClient.generateResponse(finalPrompt*200)
+        response = self.llmClient.generateResponse(finalPrompt)
         return response
             
 

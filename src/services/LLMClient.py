@@ -29,7 +29,7 @@ class LLMClient:
         try:
             isValidRequest = self.checkIfValidRequest(prompt)
             if not isValidRequest:
-                raise Exception("The prompt is too long. Please shorten it.")
+                raise Exception("The prompt received is too long.")
             
             response = self.client.chat.completions.create(
                 model=self.model,
@@ -50,7 +50,7 @@ class LLMClient:
             raise Exception("Rate limit reached. You have exceeded the maximum number of requests for this model. Please try again later.")
             
         except Exception as e:
-            raise Exception("An unexpected error occurred.")
+            raise Exception(e)
         
         
     def checkIfValidRequest(self, text: str) -> bool:    

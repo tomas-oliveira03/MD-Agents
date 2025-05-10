@@ -1,26 +1,35 @@
 from flask import jsonify, request
-
 from services.Agent import Agent
 
 specialistAgent = Agent(reasoningModel=False)
 
 def registerSpecialistAgentRoutes(app, prefix):
     
-    @app.route(f"{prefix}/")
-    def root():
-        return jsonify({"message": "Welcome to the simplified API!"})
-
     @app.route(f"{prefix}/ask", methods=["POST"])
     def askQuestion():
         data = request.get_json()
-        prompt = data.get("prompt")
+        requestId = data.get("requestId")
+        userId = data.get("userId")
+        userPrompt = data.get("userPrompt")
 
-        if not prompt:
-            return jsonify({"error": "No prompt provided."}), 400
+        if not requestId or not userId or not userPrompt:
+            return jsonify({"error": "Missing requestId, userId, or userPrompt."}), 400
+    
+        # Get user information from the database
+        userInformation = {
+            "age": 25,
+            "weight": 70
+        }
 
-        # Use the global agent to process the question
         try:
-            response = specialistAgent.submitQuestion(prompt)
-            return jsonify({"response": response})
+            response = specialistAgent.submitQuestion(userPrompt, userInformation)
+            return jsonify({
+                "requestId": requestId,
+                "response": response
+            }), 200
+
         except Exception as e:
-            return jsonify({"error": str(e)}), 400
+            return jsonify({
+                "requestId": requestId,
+                "error": str(e)
+            }), 500
