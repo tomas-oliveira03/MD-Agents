@@ -28,9 +28,8 @@ class LLMClient:
     def generateResponse(self, prompt: str) -> str:
         try:
             isValidRequest = self.checkIfValidRequest(prompt)
-            print("Is Valid Request", isValidRequest)
-            
-            
+            if not isValidRequest:
+                raise Exception("The prompt is too long. Please shorten it.")
             
             response = self.client.chat.completions.create(
                 model=self.model,
@@ -66,7 +65,6 @@ class LLMClient:
         print("Tokens used", tokensUsed)
         
         if totalTokensUsed > allowedTokenLimit:
-            print(f"Warning: The prompt is too long ({totalTokensUsed} tokens). Please shorten it.")
             return False
         else:
             return True
