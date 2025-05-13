@@ -1,7 +1,7 @@
 from flask import request
 from datetime import datetime
 from server.utils.logger import logger  
-from server.routers.specialistAgent import registerSpecialistAgentRoutes
+from server.routers.ask import askQuestionToSpecialistAgent
 
 def registerRoutes(app, path):
     # Optional: Request timing
@@ -17,4 +17,4 @@ def registerRoutes(app, path):
         return response
 
     # Register specialist agent routes
-    registerSpecialistAgentRoutes(app, prefix=f"{path}/specialistAgent")
+    askQuestionToSpecialistAgent(app, prefix=f"{path}/ask")

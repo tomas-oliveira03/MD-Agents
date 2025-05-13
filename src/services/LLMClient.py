@@ -9,7 +9,6 @@ class LLMClient:
     
     # Initialize the LLM client by loading the API key
     def __init__(self, reasoningModel: bool = False):
-        load_dotenv()
         apiKey =os.getenv("TOGETHERAI_AI_KEY")
         if not apiKey:
             raise ValueError("TOGETHERAI_AI_KEY environment variable not set.")
@@ -25,7 +24,7 @@ class LLMClient:
 
 
     # Send a prompt to the LLM and return the response
-    def generateResponse(self, prompt: str) -> str:
+    def generateResponse(self, prompt: str, userHistory: dict) -> str:
         try:
             isValidRequest = self.checkIfValidRequest(prompt)
             if not isValidRequest:

@@ -7,7 +7,6 @@ import random
 
 class PineconeHandler:
     def __init__(self, chunkedData, topK, targetThreshold, minimumThreshold, maxHierarchyLevel):
-        load_dotenv()
         apiKey = os.getenv("PINECONE_API_KEY")
         if not apiKey:
             raise ValueError("PINECONE_API_KEY environment variable not set.")
