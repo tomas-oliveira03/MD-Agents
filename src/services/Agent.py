@@ -10,7 +10,7 @@ import time
 
 class Agent:
     
-    def __init__(self, reasoningModel=True, contextPrompt="config/contextPrompt.txt", chunkedData="data/chunkedData.json", topK=5, targetThreshold=0.6, minimumThreshold=0.2, maxHierarchyLevel=3):
+    def __init__(self, reasoningModel=True, contextPrompt="src/config/contextPrompt.txt", chunkedData="src/data/chunkedData.json", topK=5, targetThreshold=0.6, minimumThreshold=0.2, maxHierarchyLevel=3):
         load_dotenv()
         globalOrchestratorBaseURL = os.getenv("GLOBAL_ORCHESTRATOR_BASE_URL")
         if not globalOrchestratorBaseURL:

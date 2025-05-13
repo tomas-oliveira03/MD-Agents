@@ -1,3 +1,11 @@
+# Run
+
+Either do:
+`python src/app.py`
+
+Or:
+`docker-compose up --build`
+
 # Hierarchical RAG with Pinecone & LLaMA Embeddings
 
 This project implements a **Hierarchical Retrieval-Augmented Generation (RAG)** system using Pinecone for vector search and LLaMA-2 embeddings via the `llama-text-embed-v2` model. It prioritizes higher-level content over deeper levels, while still allowing fallback to lower hierarchies only when necessary.

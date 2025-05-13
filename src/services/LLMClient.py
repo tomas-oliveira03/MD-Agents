@@ -1,6 +1,5 @@
 from together import Together
 import os
-from dotenv import load_dotenv
 import re
 import together
 import tiktoken

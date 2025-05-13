@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  specialist-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: specialist-agent:latest
+    container_name: specialist-agent
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    volumes:
+      - ./src/data:/app/src/data
+      - ./src/config:/app/src/config
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

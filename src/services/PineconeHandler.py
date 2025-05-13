@@ -1,9 +1,6 @@
 import json
-from textwrap import wrap
 from pinecone import Pinecone, ServerlessSpec
 import os
-from dotenv import load_dotenv
-import random
 
 class PineconeHandler:
     def __init__(self, chunkedData, topK, targetThreshold, minimumThreshold, maxHierarchyLevel):
