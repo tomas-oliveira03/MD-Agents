@@ -22,26 +22,6 @@ def formatUserInformation(userInformation: dict) -> str:
     return result
 
 
-def formatFinalPrompt(contextPrompt, userPrompt, context, userInformation):
-    formattedUserInformation = formatUserInformation(userInformation)
-    
-    # Start building the prompt
-    prompt = (
-        f"{contextPrompt}\n\n"
-        "Question:\n"
-        f"{userPrompt}\n\n"
-    )
-    
-    # Add user information if it exists, right after the question
-    if formattedUserInformation:
-        prompt += f"User Information:\n{formattedUserInformation}\n\n"
-    
-    # Add the articles context last
-    prompt += f"Articles context:\n{context}"
-
-    return prompt
-
-
 def sendWebhook(endpoint, content):
     try:
         # Sending POST request to the endpoint with content
@@ -57,5 +37,33 @@ def sendWebhook(endpoint, content):
     except Exception as e:
         print(f"An error occurred while sending the webhook: {str(e)}")
 
+
+def formatPrompt(contextPrompt, userPrompt, context, userInformation, userHistory=None):
+    formattedUserInformation = formatUserInformation(userInformation)
+    
+    # Start building the prompt
+    prompt = (
+        f"{contextPrompt}\n\n"
+        "Question:\n"
+        f"{userPrompt}\n\n"
+    )
+    
+    # Add user information if it exists, right after the question
+    if formattedUserInformation:
+        prompt += f"User Information:\n{formattedUserInformation}\n\n"
+        
+    if userHistory:
+        prompt += "User History:\n"
+        for message in userHistory:
+            prompt += f"{message['role']}: {message['text']}\n"
+        prompt += "\n"
+    
+    # Add the articles context last
+    prompt += f"Articles context:\n{context}"
+
+    return prompt
+
+    
+    
     
     

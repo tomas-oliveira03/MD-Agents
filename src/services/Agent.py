@@ -1,6 +1,6 @@
 from services.LLMClient import LLMClient
 from services.PineconeHandler import PineconeHandler
-from services.utils import loadInitialPrompt, formatFinalPrompt, sendWebhook
+from services.utils import loadInitialPrompt, formatPrompt, sendWebhook
 from dotenv import load_dotenv
 import os
 import queue
@@ -25,6 +25,7 @@ class Agent:
         self.taskQueue = queue.Queue()
         self.workerThread = threading.Thread(target=self._processQueue, daemon=True)
         self.workerThread.start()
+        
         
     def _processQueue(self):
         while True:
@@ -63,15 +64,45 @@ class Agent:
         if context == "":
             raise Exception("The articles does not provide enough information to answer completely.")
         
-        ## TO REMOVE LATER
         userInformation = user["preferences"]
-        print(userInformation)
-        userHistory = {}
+        userHistory = user["conversation"]
         
-        finalPrompt = formatFinalPrompt(self.contextPrompt, prompt, context, userInformation)   
+        promptWithoutUserHistory = formatPrompt(self.contextPrompt, prompt, context, userInformation)   
+        
+        # If prompt is too long, automatically error out
+        isValidRequest = self.llmClient.checkIfValidRequest(promptWithoutUserHistory)
+        if not isValidRequest:
+            raise Exception("The prompt received is too long.")
+        
+        # If not, we will check to see if we can add some user history as well
+        promptWithUserHistory = self.checkMaxUserHistory(prompt, context, userInformation, userHistory)
+        
+        # If its not possible to add any history, just send the default prompt
+        if promptWithUserHistory:
+            finalPrompt = promptWithUserHistory
+        else:
+            finalPrompt = promptWithoutUserHistory
+            
         print(f"\n\n{finalPrompt}\n\n")
-        response = self.llmClient.generateResponse(finalPrompt, userHistory)
+        
+        response = self.llmClient.generateResponse(finalPrompt)
         return response
+            
+    
+    # Attempts to build a valid prompt using the full user history.
+    # If the prompt is too long, it progressively removes the oldest entries
+    # from userHistory (one at a time from the front) and retries.
+    # Returns the first successfully validated prompt.
+    # If no version of the prompt is valid with any history added, returns None.
+    def checkMaxUserHistory(self, prompt, context, userInformation, userHistory):
+        for i in range(len(userHistory) + 1):
+            trimmedHistory = userHistory[i:]
+            formattedPrompt = formatPrompt(self.contextPrompt, prompt, context, userInformation, trimmedHistory)
+
+            if self.llmClient.checkIfValidRequest(formattedPrompt):
+                return formattedPrompt
+
+        return None
             
 
 if __name__ == "__main__":

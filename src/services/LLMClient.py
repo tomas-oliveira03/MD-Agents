@@ -24,12 +24,8 @@ class LLMClient:
 
 
     # Send a prompt to the LLM and return the response
-    def generateResponse(self, prompt: str, userHistory: dict) -> str:
-        try:
-            isValidRequest = self.checkIfValidRequest(prompt)
-            if not isValidRequest:
-                raise Exception("The prompt received is too long.")
-            
+    def generateResponse(self, prompt: str) -> str:
+        try:            
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
@@ -62,7 +58,6 @@ class LLMClient:
         allowedTokenLimit = totalLimit - fallBackTokens
         
         print("Tokens used", tokensUsed)
-        
         if totalTokensUsed > allowedTokenLimit:
             return False
         else:
@@ -76,8 +71,8 @@ class LLMClient:
         # Encode the text and get the number of tokens
         tokens = encoding.encode(text)
         
-        return len(tokens)
-            
+        return len(tokens)  
+    
         
     # Remove the <think>...</think> section from the response (present in reasoning models)
     def cleanResponse(self, response):
