@@ -1,6 +1,6 @@
 from services.LLMClient import LLMClient
 from services.PineconeHandler import PineconeHandler
-from services.utils import loadInitialPrompt, formatPrompt, sendWebhook
+from services.utils import loadInitialPrompt, loadGroupConfig, formatPrompt, sendWebhook
 from dotenv import load_dotenv
 import os
 import queue
@@ -8,16 +8,27 @@ import threading
 
 class Agent:
     
-    def __init__(self, reasoningModel=True, contextPrompt="src/config/contextPrompt.txt", chunkedData="src/data/chunkedData.json", topK=5, targetThreshold=0.6, minimumThreshold=0.2, maxHierarchyLevel=3):
+    def __init__(self, groupNumber):
         load_dotenv()
-        globalOrchestratorBaseURL = os.getenv("GLOBAL_ORCHESTRATOR_BASE_URL")
-        if not globalOrchestratorBaseURL:
-            raise ValueError("GLOBAL_ORCHESTRATOR_BASE_URL environment variable not set.")
-        self.globalOrchestratorEndpoint = globalOrchestratorBaseURL + "/reply"
         
-        self.contextPrompt = loadInitialPrompt(contextPrompt)
-        self.pineconeHandler = PineconeHandler(chunkedData, topK, targetThreshold, minimumThreshold, maxHierarchyLevel)
-        self.llmClient = LLMClient(reasoningModel)
+        globalOrchestratorAPIPort = os.getenv("GLOBAL_ORCHESTRATOR_API_PORT")
+        if not globalOrchestratorAPIPort:
+            raise ValueError("GLOBAL_ORCHESTRATOR_BASE_URL environment variable not set.")
+        self.globalOrchestratorEndpoint = f"http://localhost:{globalOrchestratorAPIPort}/reply"
+        
+        self.groupConfig = loadGroupConfig("src/config/groupConfig.json", f"Group_{groupNumber}")
+        
+        self.contextPrompt = loadInitialPrompt(self.groupConfig["contextPrompt"])
+        
+        self.pineconeHandler = PineconeHandler(self.groupConfig["pineconeAPI_Key"],
+                                               self.groupConfig["chunkedData"],
+                                               self.groupConfig["topK"],
+                                               self.groupConfig["targetThreshold"],
+                                               self.groupConfig["minimumThreshold"],
+                                               self.groupConfig["maxHierarchyLevel"])
+
+        self.llmClient = LLMClient(self.groupConfig["togetherAI_API_Key"],
+                                   self.groupConfig["reasoningModel"])
         
         # Create a queue and start a worker thread
         self.taskQueue = queue.Queue()

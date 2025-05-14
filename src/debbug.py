@@ -1,7 +1,9 @@
 import time
 from services.Agent import Agent
 
-agent = Agent(reasoningModel=False)
+groupNumber=4 # Changed based on your group number
+
+agent = Agent(4)
 
 requestId = "123-242123-3213213"
 user = {

@@ -3,7 +3,8 @@ from services.Agent import Agent
 from server.models.User import UserModel
 from pydantic import ValidationError
 
-specialistAgent = Agent(reasoningModel=False)
+groupNumber=4 # Changed based on your group number
+specialistAgent = Agent(groupNumber)
 
 def askQuestionToSpecialistAgent(app, prefix):
     
