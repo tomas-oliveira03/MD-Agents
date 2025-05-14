@@ -3,7 +3,7 @@ from datetime import datetime
 from server.utils.logger import logger  
 from server.routers.ask import askQuestionToSpecialistAgent
 
-def registerRoutes(app, path):
+def registerRoutes(app, path, specialistAgent):
     # Optional: Request timing
     @app.before_request
     def before_request():
@@ -17,4 +17,4 @@ def registerRoutes(app, path):
         return response
 
     # Register specialist agent routes
-    askQuestionToSpecialistAgent(app, prefix=f"{path}/ask")
+    askQuestionToSpecialistAgent(app, f"{path}/ask", specialistAgent)

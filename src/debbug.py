@@ -1,9 +1,12 @@
+import os
 import time
+from dotenv import load_dotenv
 from services.Agent import Agent
 
-groupNumber=4 # Changed based on your group number
+load_dotenv()
 
-agent = Agent(4)
+groupNumber = os.environ.get('GROUP_NUMBER', 4) # Changed based on your group number
+agent = Agent(groupNumber)
 
 requestId = "123-242123-3213213"
 user = {

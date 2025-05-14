@@ -1,12 +1,8 @@
 from flask import jsonify, request
-from services.Agent import Agent
 from server.models.User import UserModel
 from pydantic import ValidationError
 
-groupNumber=4 # Changed based on your group number
-specialistAgent = Agent(groupNumber)
-
-def askQuestionToSpecialistAgent(app, prefix):
+def askQuestionToSpecialistAgent(app, prefix, specialistAgent):
     
     @app.route(f"{prefix}", methods=["POST"])
     def askQuestion():

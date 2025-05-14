@@ -4,10 +4,6 @@ import os
 
 class PineconeHandler:
     def __init__(self, apiKey, chunkedData, topK, targetThreshold, minimumThreshold, maxHierarchyLevel):
-        # apiKey = os.getenv("PINECONE_API_KEY")
-        # if not apiKey:
-        #     raise ValueError("PINECONE_API_KEY environment variable not set.")
-        
         # Pinecone config
         self.pc = Pinecone(api_key=apiKey)
         self.indexName = "project"

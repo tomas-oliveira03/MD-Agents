@@ -8,10 +8,6 @@ class LLMClient:
     
     # Initialize the LLM client by loading the API key
     def __init__(self, apiKey, reasoningModel: bool = False):
-        # apiKey =os.getenv("TOGETHERAI_AI_KEY")
-        # if not apiKey:
-        #     raise ValueError("TOGETHERAI_AI_KEY environment variable not set.")
-        
         # TogetherAI config
         self.client = Together(api_key=apiKey)
         self.reasoningModel = reasoningModel

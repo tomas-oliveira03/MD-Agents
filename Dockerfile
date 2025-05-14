@@ -22,8 +22,8 @@ ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=src/app.py
 ENV FLASK_DEBUG=0
 
-# Expose the port the app runs on
-EXPOSE 3001
+# Expose the port (this will now be handled by Flask dynamically)
+EXPOSE 3000-3005
 
-# Set the entrypoint with proper signal forwarding for graceful shutdown
-CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=3001"]
+# Set the entrypoint to use the dynamic port from GROUP_NUMBER
+CMD python -m flask run --host=0.0.0.0 --port=$FLASK_PORT
