@@ -5,8 +5,6 @@ from dotenv import load_dotenv
 import os
 import queue
 import threading
-import time
-
 
 class Agent:
     
@@ -104,20 +102,3 @@ class Agent:
 
         return None
             
-
-if __name__ == "__main__":
-    agent = Agent(reasoningModel=False)
-    
-    requestId = "123-242123-3213213"
-    user = {
-        "name": "2",
-        "age": 2
-    },
-    prompt = "How many hours of sleep should I get?"
-    
-    agent.handleRequest(requestId, user, prompt)
-    
-    while True:
-        time.sleep(100)
-
-    
