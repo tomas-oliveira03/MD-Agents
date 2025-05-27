@@ -26,11 +26,11 @@
     "contextPrompt": "src/config/contextPrompt_3.txt",
     "chunkedData": "src/data/chunkedData.json",
     "topK": 5,
-    "targetThreshold": 0.6,
-    "minimumThreshold": 0.2,
+    "targetThreshold": 0.49,
+    "minimumThreshold": 0.3,
     "maxHierarchyLevel": 3,
-    "togetherAI_API_Key": "YOUR_API_KEY",
-    "pineconeAPI_Key": "YOUR_API_KEY"
+    "togetherAI_API_Key": "95e2342e7f0a28d3094919ebf052fe08ec7ad6f9de5d44319fb90d63fc07ce63",
+    "pineconeAPI_Key": "pcsk_5Up8i1_NRFk78MknBSJayFiU9AnkFMNxiVLEPMg4GvWQZcQLHn1oW1CmQ2JxsotFFegRvH"
   },
     "Group_4": {
     "reasoningModel": false,
