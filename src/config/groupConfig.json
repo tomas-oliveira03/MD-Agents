@@ -18,8 +18,8 @@
     "targetThreshold": 0.5,
     "minimumThreshold": 0.2,
     "maxHierarchyLevel": 2,
-    "togetherAI_API_Key": "9be08b1b81c602ad7672b5d913439b3e9fce712a460d6a056c3bcc9db7f1d3e3",
-    "pineconeAPI_Key": "pcsk_6qf8kj_9w61ctrpQNzrNVadceiUsV5sW2cbnTv9qLw9H4n14B1sgWyDxpmZComrJCsWNLu"
+    "togetherAI_API_Key": "YOUR_API_KEY",
+    "pineconeAPI_Key": "YOUR_API_KEY"
   },
   "Group_3": {
     "reasoningModel": false,
