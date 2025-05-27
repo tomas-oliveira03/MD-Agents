@@ -13,13 +13,13 @@
   "Group_2": {
     "reasoningModel": false,
     "contextPrompt": "src/config/contextPrompt_2.txt",
-    "chunkedData": "src/data/chunkedData.json",
-    "topK": 5,
-    "targetThreshold": 0.6,
+    "chunkedData": "",
+    "topK": 4,
+    "targetThreshold": 0.5,
     "minimumThreshold": 0.2,
-    "maxHierarchyLevel": 3,
-    "togetherAI_API_Key": "YOUR_API_KEY",
-    "pineconeAPI_Key": "YOUR_API_KEY"
+    "maxHierarchyLevel": 2,
+    "togetherAI_API_Key": "9be08b1b81c602ad7672b5d913439b3e9fce712a460d6a056c3bcc9db7f1d3e3",
+    "pineconeAPI_Key": "pcsk_6qf8kj_9w61ctrpQNzrNVadceiUsV5sW2cbnTv9qLw9H4n14B1sgWyDxpmZComrJCsWNLu"
   },
   "Group_3": {
     "reasoningModel": false,
